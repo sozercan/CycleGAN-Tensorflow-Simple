@@ -1,0 +1,34 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  labels:
+    app: cyclegan-tensorflow-tester
+  name: cyclegan-tensorflow-tester
+spec:
+  template:
+    metadata:
+      name: cyclegan-tensorflow-tester
+    spec:
+      volumes:
+      - name: libraries
+        hostPath:
+          path: /usr/lib/x86_64-linux-gnu
+      - name: azurefile
+        azureFile:
+            secretName: azure-secret
+            shareName: data
+            readOnly: false
+      containers:
+      - name: cyclegan-tensorflow-tester
+        command: ["/bin/sh", "-c"]
+        args: ["export LD_LIBRARY_PATH=/usr/lib/x86_64-linux-gnu_custom:$LD_LIBRARY_PATH; python test.py --dataset=vangogh2photo"]
+        image: sozercan/cyclegan-tensorflow-simple
+        resources:
+          limits:
+            alpha.kubernetes.io/nvidia-gpu: 1
+        volumeMounts:
+        - mountPath: /usr/lib/x86_64-linux-gnu_custom
+          name: libraries
+        - mountPath: "/data"
+          name: azurefile
+      restartPolicy: Never

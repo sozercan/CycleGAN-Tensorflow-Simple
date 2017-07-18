@@ -33,18 +33,18 @@ with tf.Session() as sess:
 
     # retore
     saver = tf.train.Saver()
-    ckpt_path = utils.load_checkpoint('./checkpoints/' + dataset, sess, saver)
+    ckpt_path = utils.load_checkpoint('/data/cyclegan/checkpoints/' + dataset, sess, saver)
     if ckpt_path is None:
         raise Exception('No checkpoint!')
     else:
         print('Copy variables from % s' % ckpt_path)
 
     # test
-    a_list = glob('./datasets/' + dataset + '/testA/*.jpg')
-    b_list = glob('./datasets/' + dataset + '/testB/*.jpg')
+    a_list = glob('/data/cyclegan/' + dataset + '/testA/*.jpg')
+    b_list = glob('/data/cyclegan/' + dataset + '/testB/*.jpg')
 
-    a_save_dir = './test_predictions/' + dataset + '/testA/'
-    b_save_dir = './test_predictions/' + dataset + '/testB/'
+    a_save_dir = '/data/cyclegan/test_predictions/' + dataset + '/testA/'
+    b_save_dir = '/data/cyclegan/test_predictions/' + dataset + '/testB/'
     utils.mkdir([a_save_dir, b_save_dir])
     for i in range(len(a_list)):
         a_real_ipt = im.imresize(im.imread(a_list[i]), [crop_size, crop_size])

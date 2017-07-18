@@ -96,13 +96,14 @@ sess = tf.Session(config=config)
 it_cnt, update_cnt = ops.counter()
 
 '''data'''
-a_img_paths = glob('./datasets/' + dataset + '/trainA/*.jpg')
-b_img_paths = glob('./datasets/' + dataset + '/trainB/*.jpg')
+a_img_paths = glob('/data/cyclegan/' + dataset + '/trainA/*.jpg')
+print(a_img_paths)
+b_img_paths = glob('/data/cyclegan/' + dataset + '/trainB/*.jpg')
 a_data_pool = data.ImageData(sess, a_img_paths, batch_size, load_size=load_size, crop_size=crop_size)
 b_data_pool = data.ImageData(sess, b_img_paths, batch_size, load_size=load_size, crop_size=crop_size)
 
-a_test_img_paths = glob('./datasets/' + dataset + '/testA/*.jpg')
-b_test_img_paths = glob('./datasets/' + dataset + '/testB/*.jpg')
+a_test_img_paths = glob('/data/cyclegan/' + dataset + '/testA/*.jpg')
+b_test_img_paths = glob('/data/cyclegan/' + dataset + '/testB/*.jpg')
 a_test_pool = data.ImageData(sess, a_test_img_paths, batch_size, load_size=load_size, crop_size=crop_size)
 b_test_pool = data.ImageData(sess, b_test_img_paths, batch_size, load_size=load_size, crop_size=crop_size)
 
@@ -110,10 +111,10 @@ a2b_pool = utils.ItemPool()
 b2a_pool = utils.ItemPool()
 
 '''summary'''
-summary_writer = tf.summary.FileWriter('./summaries/' + dataset, sess.graph)
+summary_writer = tf.summary.FileWriter('/data/cyclegan/summaries/' + dataset, sess.graph)
 
 '''saver'''
-ckpt_dir = './checkpoints/' + dataset
+ckpt_dir = '/data/cyclegan/checkpoints/' + dataset
 utils.mkdir(ckpt_dir + '/')
 
 saver = tf.train.Saver(max_to_keep=5)
@@ -170,7 +171,7 @@ try:
             [a2b_opt, a2b2a_opt, b2a_opt, b2a2b_opt] = sess.run([a2b, a2b2a, b2a, b2a2b], feed_dict={a_real: a_real_ipt, b_real: b_real_ipt})
             sample_opt = np.concatenate((a_real_ipt, a2b_opt, a2b2a_opt, b_real_ipt, b2a_opt, b2a2b_opt), axis=0)
 
-            save_dir = './sample_images_while_training/' + dataset
+            save_dir = '/data/cyclegan/sample_images_while_training/' + dataset
             utils.mkdir(save_dir + '/')
             im.imwrite(im.immerge(sample_opt, 2, 3), '%s/Epoch_(%d)_(%dof%d).jpg' % (save_dir, epoch, it_epoch, batch_epoch))
 
